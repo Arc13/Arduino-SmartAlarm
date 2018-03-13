@@ -8,4 +8,10 @@ A school project which is an alarm controllable via an LCD/Bluetooth
 - DS3231 RTC
 - LCD Keypad Shield VMA203
 
-Professionnal™ schematic Soon™
+## Software used
+- [RTC library by Makuna](https://github.com/Makuna/Rtc)
+
+## Files
+- [License](https://github.com/Arc13/Arduino-SmartAlarm/blob/master/LICENSE)
+- Professionnal™ schematic Soon™
+- Bluetooth communication syntax Soon™ too
