@@ -43,10 +43,10 @@ class CommandProcessor {
       RESPONSE_INVALIDJSON,
     };
 
-    static bool verifyArgCount(size_t size, size_t expectedSize);
+    static bool verifyArgCount(size_t size, size_t expectedSize, RequestType requestType);
 
-    static void sendResponse(ResponseType responseType);
-    static void sendResponse(ResponseType responseType, int dataLength, char *data[]);
+    static void sendResponse(ResponseType responseType, RequestType requestType);
+    static void sendResponse(ResponseType responseType, RequestType requestType, int dataLength, char *data[]);
     static String adaptDataArg(char *dataArg);
 };
 

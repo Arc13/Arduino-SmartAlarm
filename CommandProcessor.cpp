@@ -16,12 +16,12 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
       switch (rqt) {
         case REQUEST_ADDALARM:
           {
-            if (!verifyArgCount(root["data"].size(), 11))
+            if (!verifyArgCount(root["data"].size(), 11, rqt))
               return;
 
             for (int i = 0; i < 11; i++) {
               if (!root["data"][i].is<int>()) {
-                sendResponse(RESPONSE_WRONGARG_TYPE);
+                sendResponse(RESPONSE_WRONGARG_TYPE, rqt);
                 return;
               }
             }
@@ -44,16 +44,16 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
           }
         case REQUEST_REMALARM:
           {
-            if (!verifyArgCount(root["data"].size(), 1))
+            if (!verifyArgCount(root["data"].size(), 1, rqt))
               return;
 
             if (!root["data"][0].is<int>()) {
-              sendResponse(RESPONSE_WRONGARG_TYPE);
+              sendResponse(RESPONSE_WRONGARG_TYPE, rqt);
               return;
             }
 
             if (root["data"][0] > AlarmUtils::getAlarmCount()) {
-              sendResponse(RESPONSE_ALARMNOTFOUND);
+              sendResponse(RESPONSE_ALARMNOTFOUND, rqt);
               return;
             }
 
@@ -65,16 +65,16 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
         // Fall into REQUEST_ENALARM
         case REQUEST_ENALARM:
           {
-            if (!verifyArgCount(root["data"].size(), 1))
+            if (!verifyArgCount(root["data"].size(), 1, rqt))
               return;
 
             if (!root["data"][0].is<int>()) {
-              sendResponse(RESPONSE_WRONGARG_TYPE);
+              sendResponse(RESPONSE_WRONGARG_TYPE, rqt);
               return;
             }
 
             if (root["data"][0] > AlarmUtils::getAlarmCount()) {
-              sendResponse(RESPONSE_ALARMNOTFOUND);
+              sendResponse(RESPONSE_ALARMNOTFOUND, rqt);
               return;
             }
 
@@ -84,18 +84,18 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
           }
         case REQUEST_MODALARM:
           {
-            if (!verifyArgCount(root["data"].size(), 12))
+            if (!verifyArgCount(root["data"].size(), 12, rqt))
               return;
 
             for (int i = 0; i < 12; i++) {
               if (!root["data"][i].is<int>()) {
-                sendResponse(RESPONSE_WRONGARG_TYPE);
+                sendResponse(RESPONSE_WRONGARG_TYPE, rqt);
                 return;
               }
             }
 
             if (root["data"][0] > AlarmUtils::getAlarmCount()) {
-              sendResponse(RESPONSE_ALARMNOTFOUND);
+              sendResponse(RESPONSE_ALARMNOTFOUND, rqt);
               return;
             }
 
@@ -117,18 +117,18 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
           }
         case REQUEST_SETSETTING:
           {
-            if (!verifyArgCount(root["data"].size(), 2))
+            if (!verifyArgCount(root["data"].size(), 2, rqt))
               return;
 
             for (int i = 0; i < 2; i++) {
               if (!root["data"][i].is<int>()) {
-                sendResponse(RESPONSE_WRONGARG_TYPE);
+                sendResponse(RESPONSE_WRONGARG_TYPE, rqt);
                 return;
               }
             }
 
             if (root["data"][0] > 2) {
-              sendResponse(RESPONSE_SETTINGNOTFOUND);
+              sendResponse(RESPONSE_SETTINGNOTFOUND, rqt);
               return;
             }
 
@@ -145,23 +145,23 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
             itoa(AlarmUtils::getAlarmCount(), alarmCountArray, 10);
 
             char *data[] = {alarmCountArray};
-            sendResponse(RESPONSE_OK, 1, data);
+            sendResponse(RESPONSE_OK, rqt, 1, data);
             return;
 
             break;
           }
         case REQUEST_GETALARM:
           {
-            if (!verifyArgCount(root["data"].size(), 1))
+            if (!verifyArgCount(root["data"].size(), 1, rqt))
               return;
 
             if (!root["data"][0].is<int>()) {
-              sendResponse(RESPONSE_WRONGARG_TYPE);
+              sendResponse(RESPONSE_WRONGARG_TYPE, rqt);
               return;
             }
 
             if (root["data"][0] > AlarmUtils::getAlarmCount()) {
-              sendResponse(RESPONSE_ALARMNOTFOUND);
+              sendResponse(RESPONSE_ALARMNOTFOUND, rqt);
               return;
             }
 
@@ -182,7 +182,7 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
             itoa(alarmToRead.alStruct.isEnabled, isEnabledBuffer, 10);
             char *data[] = {root["data"][0], hoursBuffer, minutesBuffer, dOWBuffer, evenWeeksBuffer, oddWeeksBuffer, isEnabledBuffer};
 
-            sendResponse(RESPONSE_OK, 7, data);
+            sendResponse(RESPONSE_OK, rqt, 7, data);
             return;
 
             break;
@@ -205,7 +205,7 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
             itoa(actualTime.year, yearBuffer, 10);
             char *data[] = {hoursBuffer, minutesBuffer, secondsBuffer, dateBuffer, monthBuffer, yearBuffer};
 
-            sendResponse(RESPONSE_OK, 6, data);
+            sendResponse(RESPONSE_OK, rqt, 6, data);
             return;
 
             break;
@@ -224,10 +224,10 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
               itoa(actualTemperature.GetFractional(), tempFractBuffer, 10);
               char *data[] = {tempWholeBuffer, tempFractBuffer};
 
-              sendResponse(RESPONSE_OK, 2, data);
+              sendResponse(RESPONSE_OK, rqt, 2, data);
               return;
             } else {
-              sendResponse(RESPONSE_RTCNOTAVAILABLE);
+              sendResponse(RESPONSE_RTCNOTAVAILABLE, rqt);
               return;
             }
 
@@ -235,12 +235,12 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
           }
         case REQUEST_SETTIME:
           {
-            if (!verifyArgCount(root["data"].size(), 6))
+            if (!verifyArgCount(root["data"].size(), 6, rqt))
               return;
 
             for (int i = 0; i < 6; i++) {
               if (!root["data"][i].is<int>()) {
-                sendResponse(RESPONSE_WRONGARG_TYPE);
+                sendResponse(RESPONSE_WRONGARG_TYPE, rqt);
                 return;
               }
             }
@@ -256,7 +256,7 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
             timeToSet.year = root["data"][5].as<int>();
 
             if (!Time::setRTCTime(timeToSet)) {
-              sendResponse(RESPONSE_RTCNOTAVAILABLE);
+              sendResponse(RESPONSE_RTCNOTAVAILABLE, rqt);
               return;
             }
             
@@ -265,34 +265,36 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
         default:
           break;
       }
+
+    
+      sendResponse(RESPONSE_OK, rqt);
     } else {
-      sendResponse(RESPONSE_MISSINGVALUES);
+      sendResponse(RESPONSE_MISSINGVALUES, -1);
       return;
     }
   } else {
-    sendResponse(RESPONSE_INVALIDJSON);
+    sendResponse(RESPONSE_INVALIDJSON, -1);
     return;
   }
 
-  sendResponse(RESPONSE_OK);
   *updateScreen = true;
 }
 
-bool CommandProcessor::verifyArgCount(size_t size, size_t expectedSize) {
+bool CommandProcessor::verifyArgCount(size_t size, size_t expectedSize, RequestType requestType) {
   if (size != expectedSize) {
-    sendResponse(RESPONSE_WRONGARG_COUNT);
+    sendResponse(RESPONSE_WRONGARG_COUNT, requestType);
     return false;
   } else {
     return true;
   }
 }
 
-void CommandProcessor::sendResponse(ResponseType responseType) {
-  Serial.println("{\"rpt\":" + String(responseType) + "}");
+void CommandProcessor::sendResponse(ResponseType responseType, RequestType requestType) {
+  Serial.println("{\"rpt\":" + String(responseType) + ", \"rqt\":" + String(requestType) + "}");
 }
 
-void CommandProcessor::sendResponse(ResponseType responseType, int dataLength, char *data[]) {
-  String responseToSend = "{\"rpt\":" + String(responseType) + ", \"data\":[";
+void CommandProcessor::sendResponse(ResponseType responseType, RequestType requestType, int dataLength, char *data[]) {
+  String responseToSend = "{\"rpt\":" + String(responseType) + ", \"rqt\":" + String(requestType) + ", \"data\":[";
 
   for (int i = 0; i < dataLength - 1; i++) {
     responseToSend += adaptDataArg(data[i]);

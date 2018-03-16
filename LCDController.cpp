@@ -734,8 +734,10 @@ void LCDController::updateIdleScreen(String clock, String temperature, String da
     m_lcd.print(date);
 
   if (temperature.length() && (temperature != m_temperature || forceUpdate)) {
-    m_lcd.setCursor(clock.length(), 0);
-    for (int i = clock.length(); i <= 15; i++)
+    int clkLength = m_position == 1 ? clock.length() : date.length();
+    
+    m_lcd.setCursor(clkLength, 0);
+    for (int i = clkLength; i <= 15; i++)
       m_lcd.print(' ');
     
     m_lcd.setCursor(15 - temperature.length(), 0);
