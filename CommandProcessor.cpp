@@ -115,6 +115,21 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
 
             break;
           }
+        case REQUEST_GETSETTINGS:
+          {
+            Settings::settingBlock1 settingBlock = Settings::getSettingBlock1();
+            
+            char hourFormatBuffer[2];
+            char temperatureFormatBuffer[2];
+            itoa(bitRead(settingBlock.settingBlockByte[0], 0), hourFormatBuffer, 10);
+            itoa(bitRead(settingBlock.settingBlockByte[0], 1), temperatureFormatBuffer, 10);
+            char *data[] = {hourFormatBuffer, temperatureFormatBuffer};
+
+            sendResponse(RESPONSE_OK, rqt, 2, data);
+            return;
+             
+            break;
+          }
         case REQUEST_SETSETTING:
           {
             if (!verifyArgCount(root["data"].size(), 2, rqt))
@@ -160,7 +175,7 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
               return;
             }
 
-            if (root["data"][0] > AlarmUtils::getAlarmCount()) {
+            if (root["data"][0] > AlarmUtils::getAlarmCount() || root["data"][0] < 1) {
               sendResponse(RESPONSE_ALARMNOTFOUND, rqt);
               return;
             }
@@ -259,14 +274,14 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
               sendResponse(RESPONSE_RTCNOTAVAILABLE, rqt);
               return;
             }
-            
+
             break;
           }
         default:
           break;
       }
 
-    
+
       sendResponse(RESPONSE_OK, rqt);
     } else {
       sendResponse(RESPONSE_MISSINGVALUES, -1);
