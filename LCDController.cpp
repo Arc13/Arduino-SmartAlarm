@@ -1,3 +1,4 @@
+#include "CommandProcessor.h"
 #include "LCDController.h"
 #include "LCDCustomChars.h"
 #include "Settings.h"
@@ -102,8 +103,10 @@ void LCDController::actionHandler(LCDController::Actions action) {
         } else if (m_position == 11) {
           bitWrite(m_alarmToCreate.alStruct.evenWeeks, 0, !bitRead(m_alarmToCreate.alStruct.evenWeeks, 0));
         } else if (m_position == 12 || m_position == 13) {
-          if (m_position == 12)
+          if (m_position == 12) {
             AlarmUtils::addAlarm(m_alarmToCreate);
+            CommandProcessor::sendSyncRequest(false);
+          }
 
           AlarmUtils::defaultAlarm(&m_alarmToCreate);
           m_position = 1;
@@ -148,6 +151,7 @@ void LCDController::actionHandler(LCDController::Actions action) {
       case ACTION_MAIN:
         if (m_secondaryData == 1) {
           AlarmUtils::setAlarmEnabled(m_position, !AlarmUtils::isAlarmEnabled(m_position));
+          CommandProcessor::sendSyncRequest(false);
         } else if (m_secondaryData == 2) {
           m_secondaryData = m_position;
           m_position = 1;
@@ -183,6 +187,7 @@ void LCDController::actionHandler(LCDController::Actions action) {
       case ACTION_MAIN:
         if (m_position == 1) {
           AlarmUtils::removeAlarm(m_secondaryData);
+          CommandProcessor::sendSyncRequest(false);
 
           m_position = m_secondaryData;
           m_secondaryData = 1;

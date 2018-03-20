@@ -22,9 +22,14 @@ class CommandProcessor {
       REQUEST_GETTIME,
       REQUEST_GETTEMP,
       REQUEST_SETTIME,
+
+      REQUEST_SYNC,
+      REQUEST_SYNC_LOW,
     };
 
     static void processCommand(String command, bool *updateScreen, RequestType *requestType);
+
+    static void sendSyncRequest(boolean low);
 
   private:
     enum ResponseType {

@@ -329,3 +329,11 @@ String CommandProcessor::adaptDataArg(char *dataArg) {
     return String("\"" + String(dataArg) + "\"");
 }
 
+void CommandProcessor::sendSyncRequest(boolean low) {
+  if (low) {
+    sendResponse(RESPONSE_OK, REQUEST_SYNC_LOW);
+  } else {
+    sendResponse(RESPONSE_OK, REQUEST_SYNC);
+  }
+}
+

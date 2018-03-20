@@ -48,6 +48,7 @@ void onSecondChanged(Time::timeStruct actualTime) {
 
 void onMinuteChanged(Time::timeStruct actualTime) {
   onSecondChanged(actualTime);
+  CommandProcessor::sendSyncRequest(true);
 
   if (AlarmUtils::isAlarmRunning(actualTime)) {
     lcd.sendNotification("Alarm!", 60000);
