@@ -118,7 +118,7 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
         case REQUEST_GETSETTINGS:
           {
             Settings::settingBlock1 settingBlock = Settings::getSettingBlock1();
-            
+
             char hourFormatBuffer[2];
             char temperatureFormatBuffer[2];
             itoa(bitRead(settingBlock.settingBlockByte[0], 0), hourFormatBuffer, 10);
@@ -127,7 +127,7 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
 
             sendResponse(RESPONSE_OK, rqt, 2, data);
             return;
-             
+
             break;
           }
         case REQUEST_SETSETTING:
@@ -335,5 +335,27 @@ void CommandProcessor::sendSyncRequest(boolean low) {
   } else {
     sendResponse(RESPONSE_OK, REQUEST_SYNC);
   }
+}
+
+void CommandProcessor::syncAlarmRemove(int position) {
+  char positionBuffer[4];
+  itoa(position, positionBuffer, 10);
+  char *data[] = {positionBuffer};
+
+  sendResponse(RESPONSE_OK, REQUEST_SYNC_ALARM_REMOVE, 1, data);
+}
+
+void CommandProcessor::syncAlarmState(int position, boolean state) {
+  int stateInt = 0;
+  if (state)
+    stateInt = 1;
+
+  char positionBuffer[4];
+  char stateBuffer[2];
+  itoa(position, positionBuffer, 10);
+  itoa(stateInt, stateBuffer, 10);
+  char *data[] = {positionBuffer, stateBuffer};
+
+  sendResponse(RESPONSE_OK, REQUEST_SYNC_ALARM_STATE, 2, data);
 }
 

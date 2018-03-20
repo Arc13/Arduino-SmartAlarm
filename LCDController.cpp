@@ -150,8 +150,10 @@ void LCDController::actionHandler(LCDController::Actions action) {
         break;
       case ACTION_MAIN:
         if (m_secondaryData == 1) {
-          AlarmUtils::setAlarmEnabled(m_position, !AlarmUtils::isAlarmEnabled(m_position));
-          CommandProcessor::sendSyncRequest(false);
+          boolean newState = !AlarmUtils::isAlarmEnabled(m_position);
+          
+          AlarmUtils::setAlarmEnabled(m_position, newState);
+          CommandProcessor::syncAlarmState(m_position, newState);
         } else if (m_secondaryData == 2) {
           m_secondaryData = m_position;
           m_position = 1;
@@ -187,7 +189,7 @@ void LCDController::actionHandler(LCDController::Actions action) {
       case ACTION_MAIN:
         if (m_position == 1) {
           AlarmUtils::removeAlarm(m_secondaryData);
-          CommandProcessor::sendSyncRequest(false);
+          CommandProcessor::syncAlarmRemove(m_secondaryData);
 
           m_position = m_secondaryData;
           m_secondaryData = 1;
@@ -644,8 +646,12 @@ void LCDController::update() {
     }
   }
 
-  if ((m_actualMode == MODE_MAINMENU || m_actualMode == MODE_LISTALARM) && millis() >= m_lastEvent + 60000)
+  if ((m_actualMode == MODE_MAINMENU || m_actualMode == MODE_LISTALARM) && millis() >= m_lastEvent + 60000) {
+    m_position = 1;
+    m_secondaryData = 1;
+    
     setMode(MODE_IDLE);
+  }
 }
 
 void LCDController::sendNotification(String message, unsigned long notificationDuration) {

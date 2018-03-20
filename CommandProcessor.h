@@ -25,11 +25,16 @@ class CommandProcessor {
 
       REQUEST_SYNC,
       REQUEST_SYNC_LOW,
+
+      REQUEST_SYNC_ALARM_REMOVE,
+      REQUEST_SYNC_ALARM_STATE,
     };
 
     static void processCommand(String command, bool *updateScreen, RequestType *requestType);
 
     static void sendSyncRequest(boolean low);
+    static void syncAlarmRemove(int position);
+    static void syncAlarmState(int position, boolean state);
 
   private:
     enum ResponseType {
