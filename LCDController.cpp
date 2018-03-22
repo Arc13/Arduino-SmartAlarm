@@ -746,10 +746,17 @@ void LCDController::checkPositionAndMode() {
 void LCDController::updateIdleScreen(String clock, String temperature, String date, bool forceUpdate) {
   m_lcd.setCursor(0, 0);
   
-  if (m_position == 1 && (clock != m_clock || forceUpdate))
+  if (m_position == 1 && (clock != m_clock || forceUpdate)) {
     m_lcd.print(clock);
-  else if (m_position == 2 && (date != m_date || forceUpdate))
+
+    Settings::settingBlock1 settingBlock = Settings::getSettingBlock1();
+    if (!settingBlock.settingBlockStruct.is12HrsFormat) {
+      for (int i = 0; i < 3; i++)
+        m_lcd.print(' ');
+    }
+  } else if (m_position == 2 && (date != m_date || forceUpdate)) {
     m_lcd.print(date);
+  }
 
   if (temperature.length() && (temperature != m_temperature || forceUpdate)) {
     int clkLength = m_position == 1 ? clock.length() : date.length();
