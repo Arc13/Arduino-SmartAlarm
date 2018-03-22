@@ -267,10 +267,17 @@ void LCDController::actionHandler(LCDController::Actions action) {
           } else {
             Settings::settingBlock1 settingBlock1 = Settings::getSettingBlock1();
 
-            if (m_position == 1)
-              settingBlock1.settingBlockStruct.is12HrsFormat = !settingBlock1.settingBlockStruct.is12HrsFormat;
-            else if (m_position == 2)
-              settingBlock1.settingBlockStruct.isDegreeFahrenheit = !settingBlock1.settingBlockStruct.isDegreeFahrenheit;
+            if (m_position == 1) {
+              byte newSetting = !settingBlock1.settingBlockStruct.is12HrsFormat;
+              
+              settingBlock1.settingBlockStruct.is12HrsFormat = newSetting;
+              CommandProcessor::syncSetting(1, newSetting == 1);
+            } else if (m_position == 2) {
+              byte newSetting = !settingBlock1.settingBlockStruct.isDegreeFahrenheit;
+              
+              settingBlock1.settingBlockStruct.isDegreeFahrenheit = newSetting;
+              CommandProcessor::syncSetting(2, newSetting);
+            }
 
             Settings::setSettingBlock1(settingBlock1);
           }

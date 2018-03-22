@@ -202,6 +202,35 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
 
             break;
           }
+        case REQUEST_GET_ALL_ALARMS:
+        {
+          for (int i = 1; i <= AlarmUtils::getAlarmCount(); i++) {
+            AlarmUtils::alarm alarmToRead;
+            AlarmUtils::readAlarmFromEEPROM(i, &alarmToRead);
+
+            char indexBuffer[4];
+            char hoursBuffer[3];
+            char minutesBuffer[3];
+            char dOWBuffer[4];
+            char evenWeeksBuffer[2];
+            char oddWeeksBuffer[2];
+            char isEnabledBuffer[2];
+            itoa(i, indexBuffer, 10);
+            itoa(alarmToRead.alStruct.hours, hoursBuffer, 10);
+            itoa(alarmToRead.alStruct.minutes, minutesBuffer, 10);
+            itoa(alarmToRead.alStruct.dayOfWeek, dOWBuffer, 10);
+            itoa(alarmToRead.alStruct.evenWeeks, evenWeeksBuffer, 10);
+            itoa(alarmToRead.alStruct.oddWeeks, oddWeeksBuffer, 10);
+            itoa(alarmToRead.alStruct.isEnabled, isEnabledBuffer, 10);
+            char *data[] = {indexBuffer, hoursBuffer, minutesBuffer, dOWBuffer, evenWeeksBuffer, oddWeeksBuffer, isEnabledBuffer};
+
+            sendResponse(RESPONSE_OK, rqt, 7, data);
+          }
+
+          sendResponse(RESPONSE_FINISHED, rqt);
+          return;
+          break;
+        }
         case REQUEST_GETTIME:
           {
             Time::timeStruct actualTime = Time::getRTCTime();
@@ -288,6 +317,12 @@ void CommandProcessor::processCommand(String command, bool *updateScreen, Reques
       return;
     }
   } else {
+    command.replace("\n", "");
+    command.replace("\r", "");
+
+    if (command.length() == 0 || command.c_str()[0] == '+')
+      return;
+    
     sendResponse(RESPONSE_INVALIDJSON, -1);
     return;
   }
@@ -357,5 +392,19 @@ void CommandProcessor::syncAlarmState(int position, boolean state) {
   char *data[] = {positionBuffer, stateBuffer};
 
   sendResponse(RESPONSE_OK, REQUEST_SYNC_ALARM_STATE, 2, data);
+}
+
+void CommandProcessor::syncSetting(int position, boolean state) {
+  int stateInt = 0;
+  if (state)
+    stateInt = 1;
+
+  char positionBuffer[4];
+  char stateBuffer[2];
+  itoa(position, positionBuffer, 10);
+  itoa(stateInt, stateBuffer, 10);
+  char *data[] = {positionBuffer, stateBuffer};
+
+  sendResponse(RESPONSE_OK, REQUEST_SYNC_SETTING, 2, data);
 }
 

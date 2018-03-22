@@ -18,6 +18,7 @@ class CommandProcessor {
 
       REQUEST_GETALARMCOUNT,
       REQUEST_GETALARM,
+      REQUEST_GET_ALL_ALARMS,
 
       REQUEST_GETTIME,
       REQUEST_GETTEMP,
@@ -28,6 +29,7 @@ class CommandProcessor {
 
       REQUEST_SYNC_ALARM_REMOVE,
       REQUEST_SYNC_ALARM_STATE,
+      REQUEST_SYNC_SETTING,
     };
 
     static void processCommand(String command, bool *updateScreen, RequestType *requestType);
@@ -35,6 +37,7 @@ class CommandProcessor {
     static void sendSyncRequest(boolean low);
     static void syncAlarmRemove(int position);
     static void syncAlarmState(int position, boolean state);
+    static void syncSetting(int position, boolean state);
 
   private:
     enum ResponseType {
@@ -52,6 +55,8 @@ class CommandProcessor {
 
       RESPONSE_MISSINGVALUES,
       RESPONSE_INVALIDJSON,
+
+      RESPONSE_FINISHED,
     };
 
     static bool verifyArgCount(size_t size, size_t expectedSize, RequestType requestType);
